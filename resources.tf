@@ -41,3 +41,35 @@ resource "azurerm_network_interface" "linux-nic" {
     public_ip_address_id = azurerm_public_ip.linux-pip.id
   }
 }
+
+resource "azurerm_network_security_group" "linux-nsg" {
+  name                = "linux-nsg"
+  location            = azurerm_resource_group.rg1.location
+  resource_group_name = azurerm_resource_group.rg1.name
+  dynamic "security_rule" {
+    for_each = var.security_rule
+    content {
+      name                       = security_rule.value.name
+      priority                   = security_rule.value.priority
+      direction                  = security_rule.value.direction
+      access                     = security_rule.value.access
+      protocol                   = security_rule.value.protocol
+      source_port_range          = security_rule.value.source_port_range
+      destination_port_range     = security_rule.value.destination_port_range
+      source_address_prefix      = security_rule.value.source_address_prefix
+      destination_address_prefix = security_rule.value.destination_address_prefix
+    }
+  }
+
+  security_rule {
+    name                       = "allow-internet"
+    priority                   = 102
+    direction                  = "Outbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "*"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+}
