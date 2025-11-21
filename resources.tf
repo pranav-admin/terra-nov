@@ -73,3 +73,8 @@ resource "azurerm_network_security_group" "linux-nsg" {
     destination_address_prefix = "*"
   }
 }
+
+resource "azurerm_network_interface_security_group_association" "linux-accociation" {
+  network_interface_id      = azurerm_network_interface.linux-nic.id
+  network_security_group_id = azurerm_network_security_group.linux-nsg.id
+}
