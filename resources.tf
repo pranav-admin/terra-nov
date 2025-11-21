@@ -18,3 +18,13 @@ resource "azurerm_subnet" "linux-subnet" {
   virtual_network_name = azurerm_virtual_network.linux-vnet.name
   address_prefixes     = ["10.0.20.0/24"]
 }
+
+resource "azurerm_public_ip" "linux-pip" {
+  name                = "linux-pip"
+  resource_group_name = azurerm_resource_group.rg1.name
+  location            = azurerm_resource_group.rg1.location
+  allocation_method   = "Static"
+  lifecycle {
+    create_before_destroy = true
+  }
+}
